@@ -7,9 +7,9 @@ const sendEmail  = require("../utils/sendEmail");
 const sendTokenResponse = (user, statusCode, res) => {
   const token = user.getSignedJwtToken();
   const options = {
-    expires:  new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+    expires:  new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     httpOnly: true,
-    secure:   process.env.NODE_ENV === "production", // HTTPS only in production
+    secure:   process.env.NODE_ENV === "production",
     sameSite: "strict",
   };
   res.status(statusCode).cookie("token", token, options).json({
@@ -30,14 +30,10 @@ const sendTokenResponse = (user, statusCode, res) => {
 exports.signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
-    // Check if user already exists
     const exists = await User.findOne({ email });
     if (exists) {
       return res.status(400).json({ success: false, message: "Email already registered" });
     }
-
-    // Create user
     const user = await User.create({ name, email, password });
     sendTokenResponse(user, 201, res);
   } catch (error) {
@@ -55,23 +51,17 @@ exports.signup = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     if (!email || !password) {
       return res.status(400).json({ success: false, message: "Please provide email and password" });
     }
-
-    // Find user with password field
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
-
-    // Check password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
-
     sendTokenResponse(user, 200, res);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -79,7 +69,7 @@ exports.login = async (req, res) => {
 };
 
 /* ══════════════════════════════════════════════════
-   GET /api/auth/me   (get current logged-in user)
+   GET /api/auth/me
 ══════════════════════════════════════════════════ */
 exports.getMe = async (req, res) => {
   try {
@@ -116,11 +106,9 @@ exports.forgotPassword = async (req, res) => {
       return res.status(404).json({ success: false, message: "No user found with that email" });
     }
 
-    // Generate reset token
     const resetToken = user.getResetPasswordToken();
     await user.save({ validateBeforeSave: false });
 
-    // Create reset URL
     const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
     const message  = `You requested a password reset. Click here to reset:\n\n${resetUrl}\n\nIf you didn't request this, please ignore.`;
 
@@ -132,6 +120,12 @@ exports.forgotPassword = async (req, res) => {
       });
       res.status(200).json({ success: true, message: "Reset link sent to email" });
     } catch (err) {
+      // *** ERROR LOGGING ADDED ***
+      console.error("═══════════════════════════════");
+      console.error("EMAIL ERROR:", err.message);
+      console.error("FULL ERROR:", err);
+      console.error("═══════════════════════════════");
+
       user.resetPasswordToken  = undefined;
       user.resetPasswordExpire = undefined;
       await user.save({ validateBeforeSave: false });
@@ -157,7 +151,6 @@ exports.resetPassword = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid or expired token" });
     }
 
-    // Set new password
     user.password            = req.body.password;
     user.resetPasswordToken  = undefined;
     user.resetPasswordExpire = undefined;
