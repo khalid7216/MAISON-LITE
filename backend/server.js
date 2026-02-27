@@ -14,11 +14,25 @@ connectDB();
 
 /* ── Global Middleware ──────────────────────────── */
 app.use(cors({
-  origin:      process.env.CLIENT_URL || "http://localhost:5173",
+  origin:      process.env.CLIENT_URL || "https://maison-lite.vercel.app/",
   credentials: true,
 }));
 app.use(express.json());
 app.use(cookieParser());
+const path = require("path");
+
+// ── Index route ──────────────────────────────────
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// ── Catch-all route ───────────────────────────────
+app.get("*", (req, res) => {
+  if (req.originalUrl.startsWith("/api")) {
+    return res.status(404).json({ success: false, message: `Route ${req.originalUrl} not found` });
+  }
+  res.sendFile(path.join(__dirname, "404.html"));
+});
 
 /* ── Routes ─────────────────────────────────────── */
 app.use("/api/auth", authRoutes);
