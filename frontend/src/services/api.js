@@ -1,5 +1,5 @@
 // frontend/src/services/api.js
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "https://maison-lite-twos.vercel.app/api";
 /* ── Helper: make API request with credentials ───── */
 const request = async (endpoint, options = {}) => {
   const config = {
