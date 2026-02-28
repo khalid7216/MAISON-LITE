@@ -13,8 +13,8 @@ const sendTokenResponse = (user, statusCode, res) => {
   const options = {
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    secure: true,        // ✅ always true (HTTPS pe hai)
+    sameSite: "none",   // ✅ strict → none (cross-origin cookies allow)
   };
   res.status(statusCode).cookie("token", token, options).json({
     success: true,
@@ -44,7 +44,6 @@ exports.signup = async (req, res) => {
 
     const user = await User.create({ name, email, password });
 
-    // ✅ UPDATED: Don't auto-login, just return success
     res.status(201).json({
       success: true,
       message: "Account created successfully",
@@ -117,7 +116,12 @@ exports.getMe = async (req, res) => {
    POST /api/auth/logout
 ══════════════════════════════════════════════════ */
 exports.logout = (req, res) => {
-  res.cookie("token", "none", { expires: new Date(Date.now()), httpOnly: true });
+  res.cookie("token", "none", {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+    secure: true,
+    sameSite: "none", // ✅ logout cookie bhi cross-origin kaam kare
+  });
   res.status(200).json({ success: true, message: "Logged out successfully" });
 };
 
@@ -163,7 +167,6 @@ exports.forgotPassword = async (req, res) => {
 
 /* ══════════════════════════════════════════════════
    PUT /api/auth/reset-password/:token
-   ✅ UPDATED: Prevents password reuse
 ══════════════════════════════════════════════════ */
 exports.resetPassword = async (req, res) => {
   try {
@@ -175,7 +178,7 @@ exports.resetPassword = async (req, res) => {
     const user = await User.findOne({
       resetPasswordToken,
       resetPasswordExpire: { $gt: Date.now() },
-    }).select("+password"); // ✅ Include password for comparison
+    }).select("+password");
 
     if (!user) {
       return res
@@ -183,7 +186,6 @@ exports.resetPassword = async (req, res) => {
         .json({ success: false, message: "Invalid or expired token" });
     }
 
-    // ✅ NEW: Check if new password is same as current password
     const isSamePassword = await user.comparePassword(req.body.password);
     if (isSamePassword) {
       return res.status(400).json({
@@ -205,7 +207,6 @@ exports.resetPassword = async (req, res) => {
 
 /* ══════════════════════════════════════════════════
    PUT /api/auth/update-profile
-   ✅ NEW ENDPOINT: Update user profile
 ══════════════════════════════════════════════════ */
 exports.updateProfile = async (req, res) => {
   try {
@@ -248,7 +249,6 @@ exports.updateProfile = async (req, res) => {
 
 /* ══════════════════════════════════════════════════
    PUT /api/auth/change-password
-   ✅ NEW ENDPOINT: Change password with validation
 ══════════════════════════════════════════════════ */
 exports.changePassword = async (req, res) => {
   try {
@@ -261,7 +261,6 @@ exports.changePassword = async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    // Verify current password
     const isMatch = await user.comparePassword(currentPassword);
     if (!isMatch) {
       return res
@@ -269,7 +268,6 @@ exports.changePassword = async (req, res) => {
         .json({ success: false, message: "Current password is incorrect" });
     }
 
-    // ✅ Prevent reusing current password
     if (currentPassword === newPassword) {
       return res.status(400).json({
         success: false,
