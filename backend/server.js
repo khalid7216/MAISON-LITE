@@ -12,23 +12,35 @@ const PORT = process.env.PORT || 5000;
 /* ── Connect DB ─────────────────────────────────── */
 connectDB();
 
-/* ── Global Middleware ──────────────────────────── */
+/* ── CORS ───────────────────────────────────────── */
 app.use(cors({
-  origin:      process.env.CLIENT_URL || "https://maison-lite.vercel.app", // ✅ no trailing slash
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+
+    // Allow all maison-lite vercel deployments + localhost
+    if (
+      origin.includes("maison-lite") ||
+      origin.includes("localhost") ||
+      origin.includes("127.0.0.1")
+    ) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
-// ✅ Preflight requests handle karo
+// Preflight requests handle karo
 app.options("*", cors());
 
 app.use(express.json());
 app.use(cookieParser());
 
 /* ── API Routes ─────────────────────────────────── */
-// ✅ Yeh sab PEHLE aane chahiye - catch-all se upar
-
 app.use("/api/auth", authRoutes);
 
 app.get("/api/health", (_, res) => res.json({ status: "ok", time: new Date() }));
@@ -38,7 +50,7 @@ app.use("/api/*", (req, res) => {
   res.status(404).json({ success: false, message: `Route ${req.originalUrl} not found` });
 });
 
-/* ── HTML routes (sab se neeche) ────────────────── */
+/* ── HTML routes ────────────────────────────────── */
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
