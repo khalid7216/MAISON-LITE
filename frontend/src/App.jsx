@@ -1,6 +1,6 @@
 // frontend/src/App.jsx
 // ═════════════════════════════════════════════════════════════
-//  UPDATED: React Router implementation with proper URLs
+//  FIXED: ProductDetailPage route added in correct location
 // ═════════════════════════════════════════════════════════════
 
 import { useState } from "react";
@@ -15,6 +15,7 @@ import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import AdminPanel from "./pages/admin/AdminPanel";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
 import { LoginPage, SignupPage, ForgotPage } from "./pages/AuthPages";
 
 /* ── App Content (inside Router) ────────────────── */
@@ -43,23 +44,27 @@ const AppContent = () => {
   /* Loading state while checking auth */
   if (authLoading) {
     return (
-      <div style={{
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "var(--void)",
-      }}>
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "var(--void)",
+        }}
+      >
         <div style={{ textAlign: "center" }}>
-          <div style={{
-            width: 60,
-            height: 60,
-            border: "3px solid var(--border)",
-            borderTopColor: "var(--gold)",
-            borderRadius: "50%",
-            margin: "0 auto 20px",
-            animation: "spin 1s linear infinite",
-          }} />
+          <div
+            style={{
+              width: 60,
+              height: 60,
+              border: "3px solid var(--border)",
+              borderTopColor: "var(--gold)",
+              borderRadius: "50%",
+              margin: "0 auto 20px",
+              animation: "spin 1s linear infinite",
+            }}
+          />
           <p style={{ color: "var(--muted)", fontSize: 14 }}>Loading...</p>
         </div>
       </div>
@@ -105,6 +110,20 @@ const AppContent = () => {
                     />
                   }
                 />
+
+                {/* ✅ PRODUCT DETAIL PAGE - ADDED HERE */}
+                <Route
+                  path="/product/:id"
+                  element={
+                    <ProductDetailPage
+                      navigate={navigate}
+                      addToCart={addToCart}
+                      wishlist={wishlist}
+                      toggleWishlist={toggleWishlist}
+                    />
+                  }
+                />
+
                 <Route
                   path="/profile"
                   element={

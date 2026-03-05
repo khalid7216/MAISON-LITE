@@ -1,3 +1,8 @@
+// frontend/src/components/ProductCard.jsx
+// ═════════════════════════════════════════════════════════════
+//  FIXED: Added navigate prop and onClick to open product detail
+// ═════════════════════════════════════════════════════════════
+
 import { useState } from "react";
 import { useToast } from "../context/ToastContext";
 import { Btn, StatusTag } from "./UI";
@@ -6,7 +11,7 @@ import { Btn, StatusTag } from "./UI";
 export const QuickView = ({ product: p, onClose, addToCart }) => {
   const toast = useToast();
   const [size, setSize] = useState("M");
-  const [qty,  setQty]  = useState(1);
+  const [qty, setQty] = useState(1);
   const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
   const handleAdd = () => {
@@ -16,25 +21,31 @@ export const QuickView = ({ product: p, onClose, addToCart }) => {
   };
 
   return (
-    <div className="modal-bg" onClick={(e) => e.target === e.currentTarget && onClose()}>
+    <div
+      className="modal-bg"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="modal-box">
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }} className="grid-1-mobile">
+        <div
+          style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}
+          className="grid-1-mobile"
+        >
           {/* Image panel */}
           <div
             style={{
               height: 520,
               background: "var(--lift)",
               overflow: "hidden",
-              borderRadius: "12px 0 0 12px", 
+              borderRadius: "12px 0 0 12px",
               position: "relative",
             }}
           >
-            <img 
-              src={p.image} 
+            <img
+              src={p.image}
               alt={p.name}
-              style={{ 
-                width: "100%", 
-                height: "100%", 
+              style={{
+                width: "100%",
+                height: "100%",
                 objectFit: "cover",
                 objectPosition: "center",
               }}
@@ -47,27 +58,74 @@ export const QuickView = ({ product: p, onClose, addToCart }) => {
           </div>
 
           {/* Info panel */}
-          <div style={{ padding: "40px 36px", display: "flex", flexDirection: "column" }}>
+          <div
+            style={{
+              padding: "40px 36px",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             {/* Close */}
             <button
               onClick={onClose}
-              style={{ alignSelf: "flex-end", background: "none", border: "none", color: "var(--muted)", fontSize: 26, lineHeight: 1, marginBottom: 20, transition: "color .2s", cursor: "pointer" }}
+              style={{
+                alignSelf: "flex-end",
+                background: "none",
+                border: "none",
+                color: "var(--muted)",
+                fontSize: 26,
+                lineHeight: 1,
+                marginBottom: 20,
+                transition: "color .2s",
+                cursor: "pointer",
+              }}
               onMouseEnter={(e) => (e.target.style.color = "var(--text)")}
               onMouseLeave={(e) => (e.target.style.color = "var(--muted)")}
             >
               ×
             </button>
 
-            <p style={{ fontSize: 10, letterSpacing: ".25em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 10 }}>
+            <p
+              style={{
+                fontSize: 10,
+                letterSpacing: ".25em",
+                textTransform: "uppercase",
+                color: "var(--gold)",
+                marginBottom: 10,
+              }}
+            >
               {p.cat}
             </p>
-            <h2 style={{ fontSize: 28, fontWeight: 300, marginBottom: 16, lineHeight: 1.2 }}>{p.name}</h2>
+            <h2
+              style={{
+                fontSize: 28,
+                fontWeight: 300,
+                marginBottom: 16,
+                lineHeight: 1.2,
+              }}
+            >
+              {p.name}
+            </h2>
 
             {/* Stars */}
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                marginBottom: 20,
+              }}
+            >
               <div style={{ display: "flex", gap: 2 }}>
                 {[1, 2, 3, 4, 5].map((s) => (
-                  <span key={s} style={{ fontSize: 12, color: s <= Math.floor(p.rating) ? "var(--gold)" : "var(--dim)" }}>
+                  <span
+                    key={s}
+                    style={{
+                      fontSize: 12,
+                      color:
+                        s <= Math.floor(p.rating) ? "var(--gold)" : "var(--dim)",
+                    }}
+                  >
                     ★
                   </span>
                 ))}
@@ -78,13 +136,32 @@ export const QuickView = ({ product: p, onClose, addToCart }) => {
             </div>
 
             {/* Price */}
-            <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 28 }}>
-              <span style={{ fontSize: 32, fontFamily: "'Playfair Display', serif", fontWeight: 300 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                gap: 12,
+                marginBottom: 28,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 32,
+                  fontFamily: "'Playfair Display', serif",
+                  fontWeight: 300,
+                }}
+              >
                 ${p.price}
               </span>
               {p.orig && (
                 <>
-                  <span style={{ fontSize: 18, color: "var(--dim)", textDecoration: "line-through" }}>
+                  <span
+                    style={{
+                      fontSize: 18,
+                      color: "var(--dim)",
+                      textDecoration: "line-through",
+                    }}
+                  >
                     ${p.orig}
                   </span>
                   <StatusTag status="Sale" />
@@ -92,18 +169,46 @@ export const QuickView = ({ product: p, onClose, addToCart }) => {
               )}
             </div>
 
-            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.85, marginBottom: 28 }}>
-              Crafted in our atelier from the finest materials. This piece embodies effortless
-              sophistication — designed to transcend seasons.
+            <p
+              style={{
+                fontSize: 13,
+                color: "var(--muted)",
+                lineHeight: 1.85,
+                marginBottom: 28,
+              }}
+            >
+              Crafted in our atelier from the finest materials. This piece
+              embodies effortless sophistication — designed to transcend seasons.
             </p>
 
             {/* Size selector */}
             <div style={{ marginBottom: 24 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
-                <span style={{ fontSize: 11, letterSpacing: ".15em", textTransform: "uppercase", color: "var(--muted)" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: 10,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 11,
+                    letterSpacing: ".15em",
+                    textTransform: "uppercase",
+                    color: "var(--muted)",
+                  }}
+                >
                   Size: {size}
                 </span>
-                <button style={{ background: "none", border: "none", color: "var(--gold)", fontSize: 11, cursor: "pointer" }}>
+                <button
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "var(--gold)",
+                    fontSize: 11,
+                    cursor: "pointer",
+                  }}
+                >
                   Size Guide →
                 </button>
               </div>
@@ -113,11 +218,18 @@ export const QuickView = ({ product: p, onClose, addToCart }) => {
                     key={s}
                     onClick={() => setSize(s)}
                     style={{
-                      width: 44, height: 44, borderRadius: 6,
-                      border: `1px solid ${size === s ? "var(--gold)" : "var(--border2)"}`,
-                      background: size === s ? "rgba(201,168,76,.15)" : "none",
+                      width: 44,
+                      height: 44,
+                      borderRadius: 6,
+                      border: `1px solid ${
+                        size === s ? "var(--gold)" : "var(--border2)"
+                      }`,
+                      background:
+                        size === s ? "rgba(201,168,76,.15)" : "none",
                       color: size === s ? "var(--gold2)" : "var(--muted)",
-                      fontSize: 12, transition: "all .2s", cursor: "pointer",
+                      fontSize: 12,
+                      transition: "all .2s",
+                      cursor: "pointer",
                       fontFamily: "'Jost', sans-serif",
                     }}
                   >
@@ -128,35 +240,94 @@ export const QuickView = ({ product: p, onClose, addToCart }) => {
             </div>
 
             {/* Quantity */}
-            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 28 }}>
-              <span style={{ fontSize: 11, letterSpacing: ".15em", textTransform: "uppercase", color: "var(--muted)" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 16,
+                marginBottom: 28,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 11,
+                  letterSpacing: ".15em",
+                  textTransform: "uppercase",
+                  color: "var(--muted)",
+                }}
+              >
                 Qty
               </span>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <button className="qty-btn" onClick={() => setQty((q) => Math.max(1, q - 1))}>−</button>
-                <span style={{ fontSize: 16, minWidth: 28, textAlign: "center", fontWeight: 500 }}>{qty}</span>
-                <button className="qty-btn" onClick={() => setQty((q) => q + 1)}>+</button>
+                <button
+                  className="qty-btn"
+                  onClick={() => setQty((q) => Math.max(1, q - 1))}
+                >
+                  −
+                </button>
+                <span
+                  style={{
+                    fontSize: 16,
+                    minWidth: 28,
+                    textAlign: "center",
+                    fontWeight: 500,
+                  }}
+                >
+                  {qty}
+                </span>
+                <button className="qty-btn" onClick={() => setQty((q) => q + 1)}>
+                  +
+                </button>
               </div>
             </div>
 
             {/* CTA */}
-            <div style={{ display: "flex", gap: 12, marginTop: "auto" }}>
+            <div
+              style={{ display: "flex", gap: 12, marginTop: "auto" }}
+            >
               <Btn v="primary" full onClick={handleAdd}>
                 Add to Bag — ${p.price * qty}
               </Btn>
               <button
-                style={{ width: 48, height: 48, flexShrink: 0, border: "1px solid var(--border2)", borderRadius: 6, background: "none", color: "var(--muted)", fontSize: 20, cursor: "pointer", transition: "all .2s" }}
-                onMouseEnter={(e) => { e.target.style.borderColor = "var(--gold)"; e.target.style.color = "var(--gold)"; }}
-                onMouseLeave={(e) => { e.target.style.borderColor = "var(--border2)"; e.target.style.color = "var(--muted)"; }}
+                style={{
+                  width: 48,
+                  height: 48,
+                  flexShrink: 0,
+                  border: "1px solid var(--border2)",
+                  borderRadius: 6,
+                  background: "none",
+                  color: "var(--muted)",
+                  fontSize: 20,
+                  cursor: "pointer",
+                  transition: "all .2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.borderColor = "var(--gold)";
+                  e.target.style.color = "var(--gold)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.borderColor = "var(--border2)";
+                  e.target.style.color = "var(--muted)";
+                }}
               >
                 ♡
               </button>
             </div>
 
             {/* Trust badges */}
-            <div style={{ display: "flex", gap: 20, marginTop: 20, paddingTop: 20, borderTop: "1px solid var(--border)" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 20,
+                marginTop: 20,
+                paddingTop: 20,
+                borderTop: "1px solid var(--border)",
+              }}
+            >
               {["🚚 Free Delivery", "↩ Free Returns", "✓ Authentic"].map((t) => (
-                <span key={t} style={{ fontSize: 11, color: "var(--muted)" }}>{t}</span>
+                <span key={t} style={{ fontSize: 11, color: "var(--muted)" }}>
+                  {t}
+                </span>
               ))}
             </div>
           </div>
@@ -167,14 +338,28 @@ export const QuickView = ({ product: p, onClose, addToCart }) => {
 };
 
 /* ── Product Card ───────────────────────────────────── */
-const ProductCard = ({ product: p, addToCart, wishlist, toggleWishlist, onQuickView, delay = 0 }) => {
-  const toast    = useToast();
+const ProductCard = ({
+  product: p,
+  navigate, // ✅ ADDED: Accept navigate prop
+  addToCart,
+  wishlist,
+  toggleWishlist,
+  onQuickView,
+  delay = 0,
+}) => {
+  const toast = useToast();
   const isWished = wishlist?.includes(p.id);
 
   return (
     <div
       className="prod-card fu lift"
-      style={{ animationDelay: `${delay}s`, animationFillMode: "both", opacity: 0 }}
+      onClick={() => navigate(`/product/${p.id}`)} // ✅ ADDED: Navigate to product detail
+      style={{
+        animationDelay: `${delay}s`,
+        animationFillMode: "both",
+        opacity: 0,
+        cursor: "pointer", // ✅ ADDED: Show pointer cursor
+      }}
     >
       {/* Image box */}
       <div
@@ -186,18 +371,18 @@ const ProductCard = ({ product: p, addToCart, wishlist, toggleWishlist, onQuickV
           position: "relative",
         }}
       >
-        <img 
-          src={p.image} 
+        <img
+          src={p.image}
           alt={p.name}
-          style={{ 
-            width: "100%", 
-            height: "100%", 
+          style={{
+            width: "100%",
+            height: "100%",
             objectFit: "cover",
             objectPosition: "center",
             transition: "transform .5s ease",
           }}
-          onMouseEnter={(e) => e.target.style.transform = "scale(1.05)"}
-          onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
+          onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
+          onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
         />
 
         {/* Badge */}
@@ -209,15 +394,29 @@ const ProductCard = ({ product: p, addToCart, wishlist, toggleWishlist, onQuickV
 
         {/* Wishlist toggle */}
         <button
-          onClick={(e) => { e.stopPropagation(); toggleWishlist(p.id); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleWishlist(p.id);
+          }}
           style={{
-            position: "absolute", top: 14, right: 14,
-            width: 36, height: 36, borderRadius: "50%",
-            background: isWished ? "rgba(201,168,76,.3)" : "rgba(0,0,0,.5)",
+            position: "absolute",
+            top: 14,
+            right: 14,
+            width: 36,
+            height: 36,
+            borderRadius: "50%",
+            background: isWished
+              ? "rgba(201,168,76,.3)"
+              : "rgba(0,0,0,.5)",
             border: `1px solid ${isWished ? "var(--gold)" : "var(--border)"}`,
             color: isWished ? "var(--gold)" : "var(--muted)",
-            fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center",
-            transition: "all .25s", backdropFilter: "blur(8px)", cursor: "pointer",
+            fontSize: 16,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "all .25s",
+            backdropFilter: "blur(8px)",
+            cursor: "pointer",
           }}
         >
           {isWished ? "♥" : "♡"}
@@ -227,27 +426,54 @@ const ProductCard = ({ product: p, addToCart, wishlist, toggleWishlist, onQuickV
         <div className="prod-overlay">
           <div style={{ display: "flex", gap: 8 }}>
             <button
-              onClick={() => onQuickView()}
-              style={{
-                flex: 1, padding: "10px 0", borderRadius: 6,
-                background: "rgba(255,255,255,.1)", backdropFilter: "blur(8px)",
-                border: "1px solid rgba(255,255,255,.15)", color: "var(--text)",
-                fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase",
-                cursor: "pointer", fontFamily: "'Jost', sans-serif", transition: "all .2s",
+              onClick={(e) => {
+                e.stopPropagation(); // ✅ ADDED: Prevent card click
+                onQuickView();
               }}
-              onMouseEnter={(e) => (e.target.style.background = "rgba(255,255,255,.18)")}
-              onMouseLeave={(e) => (e.target.style.background = "rgba(255,255,255,.1)")}
+              style={{
+                flex: 1,
+                padding: "10px 0",
+                borderRadius: 6,
+                background: "rgba(255,255,255,.1)",
+                backdropFilter: "blur(8px)",
+                border: "1px solid rgba(255,255,255,.15)",
+                color: "var(--text)",
+                fontSize: 11,
+                letterSpacing: ".12em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+                fontFamily: "'Jost', sans-serif",
+                transition: "all .2s",
+              }}
+              onMouseEnter={(e) =>
+                (e.target.style.background = "rgba(255,255,255,.18)")
+              }
+              onMouseLeave={(e) =>
+                (e.target.style.background = "rgba(255,255,255,.1)")
+              }
             >
               Quick View
             </button>
             <button
-              onClick={(e) => { e.stopPropagation(); addToCart(p); toast(`${p.name} added!`, "ok"); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                addToCart(p);
+                toast(`${p.name} added!`, "ok");
+              }}
               style={{
-                flex: 1, padding: "10px 0", borderRadius: 6,
-                background: "var(--gold)", border: "none",
-                color: "#0d0b0a", fontSize: 11, letterSpacing: ".12em",
-                textTransform: "uppercase", cursor: "pointer",
-                fontFamily: "'Jost', sans-serif", fontWeight: 500, transition: "all .2s",
+                flex: 1,
+                padding: "10px 0",
+                borderRadius: 6,
+                background: "var(--gold)",
+                border: "none",
+                color: "#0d0b0a",
+                fontSize: 11,
+                letterSpacing: ".12em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+                fontFamily: "'Jost', sans-serif",
+                fontWeight: 500,
+                transition: "all .2s",
               }}
               onMouseEnter={(e) => (e.target.style.background = "var(--gold2)")}
               onMouseLeave={(e) => (e.target.style.background = "var(--gold)")}
@@ -260,27 +486,66 @@ const ProductCard = ({ product: p, addToCart, wishlist, toggleWishlist, onQuickV
 
       {/* Info row */}
       <div style={{ padding: "18px 4px 8px" }}>
-        <p style={{ fontSize: 10, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 7 }}>
+        <p
+          style={{
+            fontSize: 10,
+            letterSpacing: ".22em",
+            textTransform: "uppercase",
+            color: "var(--gold)",
+            marginBottom: 7,
+          }}
+        >
           {p.cat}
         </p>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-          <h3 style={{ fontSize: 16, fontWeight: 300, color: "var(--text)", lineHeight: 1.2, flex: 1, paddingRight: 12 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "baseline",
+          }}
+        >
+          <h3
+            style={{
+              fontSize: 16,
+              fontWeight: 300,
+              color: "var(--text)",
+              lineHeight: 1.2,
+              flex: 1,
+              paddingRight: 12,
+            }}
+          >
             {p.name}
           </h3>
           <div style={{ textAlign: "right", flexShrink: 0 }}>
             <span style={{ fontSize: 16, fontWeight: 500 }}>${p.price}</span>
             {p.orig && (
-              <span style={{ fontSize: 13, color: "var(--dim)", textDecoration: "line-through", marginLeft: 6 }}>
+              <span
+                style={{
+                  fontSize: 13,
+                  color: "var(--dim)",
+                  textDecoration: "line-through",
+                  marginLeft: 6,
+                }}
+              >
                 ${p.orig}
               </span>
             )}
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            marginTop: 8,
+          }}
+        >
           <span style={{ color: "var(--gold)", fontSize: 11, letterSpacing: 2 }}>
             {"★".repeat(Math.floor(p.rating))}
           </span>
-          <span style={{ fontSize: 11, color: "var(--dim)" }}>({p.reviews})</span>
+          <span style={{ fontSize: 11, color: "var(--dim)" }}>
+            ({p.reviews})
+          </span>
         </div>
       </div>
     </div>
